@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oziomachi Nwankwo — Writer · Director · Illustrator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0c0b09;
+      --bg2:      #111008;
+      --gold:     #c9a96e;
+      --gold-lt:  #e8c87a;
+      --cream:    #f0ead8;
+      --grey:     #6b6560;
+      --grey-lt:  #a09890;
+      --white:    #f5f2ec;
+      --red:      #8b2020;
+      --serif:    'Cormorant Garamond', Georgia, serif;
+      --sans:     'Inter', system-ui, sans-serif;
+      --mono:     'Space Mono', monospace;
+      --gap:      clamp(1.5rem, 4vw, 3.5rem);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* film grain overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: .45;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── SCROLL PROGRESS ─── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: var(--gold);
+      width: 0%;
+      z-index: 1000;
+      transition: width .1s linear;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem clamp(1.5rem, 5vw, 4rem);
+      background: linear-gradient(to bottom, rgba(12,11,9,.95) 0%, rgba(12,11,9,0) 100%);
+      backdrop-filter: blur(0px);
+      transition: background .3s, backdrop-filter .3s;
+    }
+    nav.scrolled {
+      background: rgba(12,11,9,.92);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      letter-spacing: .08em;
+      color: var(--gold);
+      font-weight: 400;
+    }
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--grey-lt);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 1px;
+      background: var(--cream);
+      transition: transform .3s, opacity .3s;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, #1a150a 0%, #0c0b09 60%);
+    }
+
+    .hero-image-wrap {
+      position: relative; z-index: 2;
+      align-self: stretch;
+      display: flex; align-items: flex-end;
+    }
+    .hero-image-wrap img {
+      width: 100%; height: 95vh;
+      object-fit: cover; object-position: top center;
+      filter: grayscale(15%) contrast(1.05);
+    }
+    .hero-image-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--bg) 100%),
+                  linear-gradient(to top, var(--bg) 0%, transparent 30%);
+    }
+
+    .hero-text {
+      position: relative; z-index: 3;
+      padding: 0 clamp(2rem, 5vw, 5rem) clamp(4rem, 8vh, 7rem) 0;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+    .hero-name {
+      font-family: var(--serif);
+      font-size: clamp(3.2rem, 7vw, 7rem);
+      font-weight: 300;
+      line-height: .95;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--gold-lt);
+    }
+    .hero-roles {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--grey-lt);
+      margin-bottom: 2.5rem;
+    }
+    .hero-roles span { color: var(--gold); }
+    .hero-desc {
+      font-size: .95rem;
+      color: var(--grey-lt);
+      max-width: 380px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: .6rem;
+      border: 1px solid var(--gold);
+      padding: .75rem 1.8rem;
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      transition: background .25s, color .25s;
+    }
+    .btn-outline:hover { background: var(--gold); color: var(--bg); }
+    .btn-solid {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: var(--gold);
+      padding: .75rem 1.8rem;
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--bg);
+      font-weight: 700;
+      transition: background .25s;
+    }
+    .btn-solid:hover { background: var(--gold-lt); }
+
+    .hero-scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    }
+    .hero-scroll-hint span {
+      font-family: var(--mono);
+      font-size: .55rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--grey), transparent);
+      animation: scroll-pulse 2s ease-in-out infinite;
+    }
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: .4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.3); }
+    }
+
+    /* ─── SECTION LAYOUT ─── */
+    section { padding: clamp(4rem, 10vh, 8rem) clamp(1.5rem, 5vw, 5rem); }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .8rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 30px; height: 1px;
+      background: var(--gold);
+    }
+    h2.section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4.5vw, 4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: clamp(2.5rem, 5vh, 5rem);
+    }
+    h2.section-title em { font-style: italic; color: var(--gold-lt); }
+
+    /* ─── FILM SECTION ─── */
+    #film { background: var(--bg); }
+
+    .film-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5px;
+    }
+
+    /* featured card takes 2 columns */
+    .film-card { position: relative; overflow: hidden; cursor: pointer; }
+    .film-card.featured { grid-column: span 2; }
+
+    .film-card-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      transition: transform .6s ease, filter .4s;
+      filter: brightness(.8);
+    }
+    .film-card.featured .film-card-img { aspect-ratio: 16/8; }
+
+    .film-card:hover .film-card-img {
+      transform: scale(1.04);
+      filter: brightness(.65);
+    }
+
+    .film-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(12,11,9,.95) 0%, rgba(12,11,9,.1) 50%, transparent 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1.8rem;
+    }
+
+    .film-card-role {
+      font-family: var(--mono);
+      font-size: .55rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .5rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .3s .05s, transform .3s .05s;
+    }
+    .film-card:hover .film-card-role { opacity: 1; transform: translateY(0); }
+
+    .film-card-title {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: .5rem;
+    }
+    .film-card-desc {
+      font-size: .8rem;
+      color: var(--grey-lt);
+      max-width: 420px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .3s .1s, transform .3s .1s;
+      line-height: 1.6;
+    }
+    .film-card:hover .film-card-desc { opacity: 1; transform: translateY(0); }
+
+    .film-card-link {
+      display: inline-flex; align-items: center; gap: .5rem;
+      margin-top: 1rem;
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .3s .15s, transform .3s .15s;
+    }
+    .film-card:hover .film-card-link { opacity: 1; transform: translateY(0); }
+    .film-card-link svg { transition: transform .2s; }
+    .film-card-link:hover svg { transform: translateX(4px); }
+
+    /* play button on video cards */
+    .play-btn {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: rgba(201,169,110,.15);
+      border: 1.5px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity .3s, background .3s;
+    }
+    .film-card:hover .play-btn { opacity: 1; }
+    .play-btn:hover { background: var(--gold); }
+    .play-btn svg { fill: var(--gold); margin-left: 4px; }
+    .play-btn:hover svg { fill: var(--bg); }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      opacity: .25;
+      margin: 0 auto;
+    }
+
+    /* ─── THEATRE ─── */
+    #theatre { background: var(--bg2); }
+
+    .theatre-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 4vw, 4rem);
+      align-items: start;
+    }
+
+    .project-card {
+      position: relative;
+      border: 1px solid rgba(201,169,110,.15);
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      transition: border-color .3s;
+    }
+    .project-card:hover { border-color: rgba(201,169,110,.4); }
+
+    .project-card-img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      filter: brightness(.85);
+      transition: filter .4s;
+    }
+    .project-card:hover .project-card-img { filter: brightness(.95); }
+
+    .project-card-role {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .6rem;
+    }
+    .project-card h3 {
+      font-family: var(--serif);
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: .8rem;
+      line-height: 1.1;
+    }
+    .project-card p {
+      font-size: .85rem;
+      color: var(--grey-lt);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ─── TAFM SECTION ─── */
+    #tafm { background: var(--bg); }
+
+    .tafm-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: clamp(3rem, 6vw, 6rem);
+      align-items: center;
+    }
+
+    .tafm-text .big-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3.5vw, 3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 2rem;
+    }
+    .tafm-text p {
+      font-size: .9rem;
+      color: var(--grey-lt);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    .tafm-photos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .tafm-photos img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover;
+      filter: brightness(.8) saturate(.85);
+      transition: filter .4s;
+    }
+    .tafm-photos img:first-child {
+      grid-column: span 2;
+      aspect-ratio: 16/9;
+    }
+    .tafm-photos img:hover { filter: brightness(.95) saturate(1); }
+
+    /* ─── WRITING ─── */
+    #writing { background: var(--bg2); }
+
+    .writing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+    }
+
+    .writing-card {
+      background: rgba(255,255,255,.02);
+      padding: 3rem 2.5rem;
+      border: 1px solid rgba(201,169,110,.1);
+      transition: background .3s, border-color .3s;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .writing-card:hover {
+      background: rgba(201,169,110,.05);
+      border-color: rgba(201,169,110,.3);
+    }
+    .writing-card-icon {
+      font-size: 2rem;
+      margin-bottom: .5rem;
+    }
+    .writing-card h3 {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.1;
+    }
+    .writing-card p {
+      font-size: .85rem;
+      color: var(--grey-lt);
+      line-height: 1.8;
+      flex: 1;
+    }
+    .writing-card a.link-arrow {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: inline-flex; align-items: center; gap: .5rem;
+      transition: gap .2s;
+      margin-top: auto;
+    }
+    .writing-card a.link-arrow:hover { gap: .9rem; }
+
+    /* Rahila / script card special */
+    .writing-card.featured-script {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    /* ─── ILLUSTRATION ─── */
+    #illustration { background: var(--bg); }
+
+    .illus-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      margin-bottom: 4rem;
+    }
+    .illus-intro p {
+      font-size: .9rem;
+      color: var(--grey-lt);
+      line-height: 1.9;
+    }
+
+    .illus-grid {
+      columns: 3;
+      column-gap: 6px;
+    }
+    .illus-item {
+      break-inside: avoid;
+      margin-bottom: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .illus-item img {
+      width: 100%;
+      transition: transform .5s ease, filter .4s;
+      filter: brightness(.9);
+    }
+    .illus-item:hover img {
+      transform: scale(1.03);
+      filter: brightness(1);
+    }
+
+    /* ─── ABOUT ─── */
+    #about { background: var(--bg2); }
+
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+
+    .about-portrait-wrap { position: relative; }
+    .about-portrait-wrap img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: top;
+      filter: grayscale(20%);
+    }
+    .portrait-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(12,11,9,.9));
+      padding: 2rem 1.5rem 1.5rem;
+    }
+    .portrait-caption span {
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .about-content h3 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    .about-content p {
+      font-size: .9rem;
+      color: var(--grey-lt);
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Experience / timeline */
+    .experience-section { margin-top: 3rem; }
+    .experience-section h4 {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      padding-bottom: .8rem;
+      border-bottom: 1px solid rgba(201,169,110,.2);
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 1.5rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .exp-year {
+      font-family: var(--mono);
+      font-size: .65rem;
+      color: var(--grey);
+      padding-top: .1rem;
+    }
+    .exp-body h5 {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: .25rem;
+    }
+    .exp-body .exp-role {
+      font-family: var(--mono);
+      font-size: .6rem;
+      letter-spacing: .12em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+    }
+    .exp-body p {
+      font-size: .8rem;
+      color: var(--grey-lt);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg);
+      padding: clamp(3rem, 6vh, 5rem) clamp(1.5rem, 5vw, 5rem);
+      border-top: 1px solid rgba(201,169,110,.12);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-name {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-weight: 300;
+      color: var(--white);
+      line-height: .95;
+    }
+    .footer-name em { font-style: italic; color: var(--gold); }
+
+    .footer-links {
+      display: flex; flex-direction: column; gap: 1rem;
+      align-items: flex-end;
+    }
+    .footer-social {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: flex-end;
+    }
+    .footer-social a {
+      font-family: var(--mono);
+      font-size: .62rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--grey-lt);
+      transition: color .2s;
+    }
+    .footer-social a:hover { color: var(--gold); }
+
+    .footer-copy {
+      margin-top: 3rem;
+      font-family: var(--mono);
+      font-size: .58rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-align: center;
+    }
+
+    /* ─── UTILITIES ─── */
+    .tag {
+      display: inline-block;
+      padding: .25rem .8rem;
+      border: 1px solid rgba(201,169,110,.35);
+      font-family: var(--mono);
+      font-size: .55rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    /* fade-in on scroll */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── BTS ROW ─── */
+    .bts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5px;
+      margin-top: 1.5px;
+    }
+    .bts-row img {
+      width: 100%; aspect-ratio: 16/10;
+      object-fit: cover;
+      filter: brightness(.75) saturate(.8);
+      transition: filter .4s;
+    }
+    .bts-row img:hover { filter: brightness(.95) saturate(1); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; }
+      .hero-image-wrap { display: none; }
+      .hero-text {
+        padding: 10rem 1.5rem 5rem;
+        max-width: 100%;
+      }
+      .film-card.featured { grid-column: span 1; }
+      .theatre-grid,
+      .tafm-layout,
+      .about-layout,
+      .illus-intro { grid-template-columns: 1fr; }
+      .writing-card.featured-script { grid-template-columns: 1fr; grid-column: span 1; }
+      .illus-grid { columns: 2; }
+      .bts-row { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      nav.menu-open .nav-links {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(12,11,9,.98);
+        align-items: center; justify-content: center;
+        gap: 2.5rem;
+        z-index: 400;
+      }
+      nav.menu-open .nav-links a { font-size: 1.1rem; }
+    }
+    @media (max-width: 600px) {
+      .illus-grid { columns: 1; }
+      .tafm-photos { grid-template-columns: 1fr; }
+      .tafm-photos img:first-child { grid-column: span 1; }
+      .film-grid { grid-template-columns: 1fr; }
+      .bts-row { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-links { align-items: flex-start; }
+      .footer-social { justify-content: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="progress-bar"></div>
+
+  <!-- ══ NAV ══ -->
+  <nav id="navbar">
+    <span class="nav-logo">OZ</span>
+    <ul class="nav-links">
+      <li><a href="#film">Film</a></li>
+      <li><a href="#theatre">Theatre</a></li>
+      <li><a href="#tafm">TAFM</a></li>
+      <li><a href="#writing">Writing</a></li>
+      <li><a href="#illustration">Illustration</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+
+    <div class="hero-image-wrap">
+      <img src="Ozed 1.jpeg"
+           alt="Oziomachi Nwankwo on set" />
+    </div>
+
+    <div class="hero-text">
+      <p class="hero-eyebrow">Portfolio · Nollywood &amp; Beyond</p>
+      <h1 class="hero-name">
+        Ozioma<em>chi</em><br />Nwankwo
+      </h1>
+      <p class="hero-roles">
+        <span>Writer</span> &nbsp;·&nbsp; Director &nbsp;·&nbsp; <span>Illustrator</span>
+      </p>
+      <p class="hero-desc">
+        A multidisciplinary storyteller working at the intersection of film, theatre, and literature. Crafting worlds with pen, lens, and ink.
+      </p>
+      <a href="#film" class="btn-outline">
+        View Projects
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══ FILM ══ -->
+  <section id="film">
+    <p class="section-label fade-up">Selected Work</p>
+    <h2 class="section-title fade-up">Film &amp; <em>Screen</em></h2>
+
+    <div class="film-grid">
+
+      <!-- ENIYAN – Director (featured) -->
+      <a href="https://youtu.be/gkizzazZnls?si=O_rgfM85hivfBVyg" target="_blank" rel="noopener"
+         class="film-card featured fade-up">
+        <img class="film-card-img"
+             src="Eniyan.jpeg"
+             alt="Eniyan – Stage Film" />
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+        </div>
+        <div class="film-card-overlay">
+          <p class="film-card-role">Director</p>
+          <h3 class="film-card-title">Eniyan</h3>
+          <p class="film-card-desc">An adaptation of Wale Ogunyemi's play "Everyman." Directed by Nwankwo Oziomachi — a meditative exploration of mortality, wealth and the human soul.</p>
+          <span class="film-card-link">
+            Watch on YouTube
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+              <path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- LAST CARD – Writer -->
+      <a href="https://youtu.be/TXJhoBEpp_c?si=zjhe5EE186YTODj9" target="_blank" rel="noopener"
+         class="film-card fade-up">
+        <img class="film-card-img"
+             src="Last Card.jpeg"
+             alt="Last Card poster" />
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+        </div>
+        <div class="film-card-overlay">
+          <p class="film-card-role">Screenwriter</p>
+          <h3 class="film-card-title">Last Card</h3>
+          <p class="film-card-desc">A Film Rats Yellow Project. Screenplay by Nwankwo Ozioma — no safety net, no fallback plan.</p>
+          <span class="film-card-link">
+            Watch on YouTube
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+              <path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- PLACES OF LOVE – Location Manager -->
+      <a href="https://youtu.be/j3KleVlTdW0?si=9uNbySQp1p1LjmTD" target="_blank" rel="noopener"
+         class="film-card fade-up">
+        <img class="film-card-img"
+             src="Places of love.jpg"
+             alt="Places of Love — Official Poster" />
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+        </div>
+        <div class="film-card-overlay">
+          <p class="film-card-role">Location Manager · Logistics &amp; Welfare</p>
+          <h3 class="film-card-title">Places Of Love</h3>
+          <p class="film-card-desc">VIFF Official Selection 2023 · Vancouver Black Independent Film Festival 2024. Managed locations, logistics, and cast welfare on this internationally selected short film.</p>
+          <span class="film-card-link">
+            Watch on YouTube
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+              <path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <!-- THE KINDLING LIGHT – BTS Journalist -->
+      <div class="film-card fade-up">
+        <img class="film-card-img"
+             src="The Kindling Light.jpeg"
+             alt="The Kindling Light" />
+        <div class="film-card-overlay">
+          <p class="film-card-role">BTS · Production Journalist</p>
+          <h3 class="film-card-title">The Kindling Light</h3>
+          <p class="film-card-desc">A Story of Innovation, Resilience, and Hope. An SDG Project — documented the behind-the-scenes journey from inside the production.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Breaking Barriers — animated GIF -->
+    <div style="margin-top:1.5px;" class="fade-up">
+      <div style="position:relative;overflow:hidden;width:100%;max-height:520px;display:flex;align-items:center;justify-content:center;background:#0c0b09;">
+        <img src="breaking_barriers.gif" alt="Breaking Barriers — BTS"
+             style="width:100%;max-height:520px;object-fit:cover;filter:brightness(.85) saturate(.85);" />
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(12,11,9,.88));padding:1.5rem 2rem;">
+          <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);">BTS · Production Journalist</p>
+          <p style="font-family:var(--serif);font-size:1.6rem;color:var(--white);font-weight:300;">Breaking Barriers</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══ THEATRE ══ -->
+  <section id="theatre">
+    <p class="section-label fade-up">Stage &amp; Page</p>
+    <h2 class="section-title fade-up">Theatre &amp; <em>Script</em></h2>
+
+    <div class="theatre-grid">
+
+      <!-- EZIOKWU -->
+      <div class="project-card fade-up">
+        <img class="project-card-img"
+             src="Eziowku Banner.jpeg"
+             alt="Eziokwu: The Stage Play — Ink & Stage Productions" />
+        <p class="project-card-role">Co-Producer &amp; Co-Writer</p>
+        <h3>Eziokwu:<br/><em style="font-style:italic;color:var(--gold-lt)">The Stage Play</em></h3>
+        <p>A theatrical production by <strong style="color:var(--white);font-weight:500;">Ink &amp; Stage Productions</strong>, co-produced and co-written by Oz (alongside Prosper Omesieta). Directed by Kelvinmary Ndukwe. Performed July 13, 2024 at the J.F. Ade Ajayi Auditorium — "Eziokwu" (truth) is a provocative stage experience interrogating honesty, identity, and the stories we tell ourselves.</p>
+        <a href="https://www.instagram.com/p/C9VoPTIuOKe/" target="_blank" rel="noopener" class="btn-outline" style="font-size:.58rem;">
+          View on Instagram
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- RAHILA -->
+      <div class="project-card fade-up">
+        <div style="width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#1a120a,#0c0b09);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;border:1px solid rgba(201,169,110,.1);">
+          <div style="text-align:center;padding:2rem;">
+            <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:.25em;color:var(--gold);margin-bottom:1rem;text-transform:uppercase;">Original Screenplay</p>
+            <h2 style="font-family:var(--serif);font-size:clamp(3rem,6vw,5rem);font-weight:300;color:var(--white);font-style:italic;line-height:1;">Rahila</h2>
+            <div style="width:40px;height:1px;background:var(--gold);margin:1.5rem auto;"></div>
+            <p style="font-family:var(--mono);font-size:.58rem;color:var(--grey-lt);letter-spacing:.12em;">— Oz</p>
+          </div>
+        </div>
+        <p class="project-card-role">Writer</p>
+        <h3>Rahila</h3>
+        <p>An original screenplay. A story written with care and intention — Rahila is available to read in full via the link below.</p>
+        <a href="https://drive.google.com/file/d/1TVeyjluDTH3hBsGdoFxtbuIubTSv8Jwl/view?usp=drivesdk" target="_blank" rel="noopener" class="btn-outline" style="font-size:.58rem;">
+          Read the Script
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══ TAFM ══ -->
+  <section id="tafm">
+    <p class="section-label fade-up">Community &amp; Curation</p>
+    <h2 class="section-title fade-up">The Annual Film <em>Mischief</em></h2>
+
+    <div class="tafm-layout">
+      <div class="tafm-text fade-up">
+        <p class="big-quote">"Bringing filmmakers together, one mischievous screening at a time."</p>
+        <p>As <strong style="color:var(--white);font-weight:500;">Programmes Manager</strong> at TAFM (The Annual Film Mischief), Oz was responsible for curating and coordinating the programming slate — connecting filmmakers from across West Africa through screenings, panels, and creative exchanges.</p>
+        <p>TAFM is a celebration of African cinema, fostering community, mentorship, and bold new voices in the industry.</p>
+        <a href="https://www.instagram.com/theannualfilm.mischief" target="_blank" rel="noopener"
+           class="btn-outline" style="margin-top:1.5rem;font-size:.58rem;">
+          Follow TAFM
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="tafm-photos fade-up">
+        <img src="DSC05632 (1).JPG.jpeg" alt="TAFM 2024 — The Annual Film Mischief banner" />
+        <img src="DSC06146.JPG.jpeg" alt="TAFM screening" />
+        <img src="DSC05589 (1).JPG.jpeg" alt="TAFM event" />
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══ WRITING ══ -->
+  <section id="writing">
+    <p class="section-label fade-up">Words &amp; Worlds</p>
+    <h2 class="section-title fade-up">The <em>Writing</em></h2>
+
+    <div class="writing-grid">
+
+      <a href="https://substack.com/@readoz" target="_blank" rel="noopener" class="writing-card fade-up">
+        <div class="writing-card-icon">📖</div>
+        <h3>Substack</h3>
+        <p>Essays, stories, and observations from the mind of Oz. A space to think out loud about film, life, and everything in between.</p>
+        <span class="link-arrow">
+          Read on Substack
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+            <path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <a href="https://drive.google.com/drive/folders/1XeN-9ef2CBPhfF2F6dR0yGcctd6eV4xT" target="_blank" rel="noopener" class="writing-card fade-up">
+        <div class="writing-card-icon">📁</div>
+        <h3>Scripts &amp; Prose</h3>
+        <p>A curated archive of screenplays, short stories, and other written works — available on Google Drive. From first drafts to finished pieces.</p>
+        <span class="link-arrow">
+          View Archive
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+            <path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <div class="writing-card fade-up">
+        <div class="writing-card-icon">🎬</div>
+        <h3>Screenplay</h3>
+        <p>Original screenplays including <em>Last Card</em>, <em>Rahila</em>, and <em>Eziokwu</em> — stories rooted in Nigerian lived experience with universal emotional reach.</p>
+        <a href="https://drive.google.com/file/d/1TVeyjluDTH3hBsGdoFxtbuIubTSv8Jwl/view?usp=drivesdk" target="_blank" rel="noopener" class="link-arrow">
+          Read Rahila
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+            <path d="M1 5h12M8 1l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══ ILLUSTRATION ══ -->
+  <section id="illustration">
+    <p class="section-label fade-up">Visual Art</p>
+    <h2 class="section-title fade-up">Illustration &amp; <em>Art</em></h2>
+
+    <div class="illus-intro fade-up">
+      <div>
+        <p>Beyond the screen and the page, Oz is a visual storyteller. Her illustrations blend digital craft with sharp social observation — from surreal compositions to grounded everyday Nigerian scenes.</p>
+        <br/>
+        <p>Each piece is signed <em style="font-family:var(--serif);font-size:1.1rem;color:var(--gold-lt);">— Oz</em></p>
+        <br/>
+        <a href="https://lnkd.in/p/eRfz__Bv" target="_blank" rel="noopener" class="btn-outline" style="font-size:.58rem;margin-top:1rem;display:inline-flex;">
+          View on LinkedIn
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+      <div>
+        <img src="Playg-1.png" alt="Oz illustration — contemplation"
+             style="width:100%;filter:brightness(.9);" />
+      </div>
+    </div>
+
+    <div class="illus-grid">
+      <div class="illus-item fade-up">
+        <img src="Spongebob 6.png" alt="Illustration — SpongeBob reimagined by Oz" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="Step 666.png" alt="Illustration — Keke rider" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="1758494986198.jpeg" alt="Illustration — Boy and the car" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="Frame 3.png" alt="Illustration — Kimono sketch and colour" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="Frame 2.png" alt="Illustration — Character feet" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="Frame 4.png" alt="Illustration — Hand study" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="Frame 5.png" alt="Illustration — Spotlight" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="Frame 6.png" alt="Illustration — Objects" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="1757853502294.jpeg" alt="Illustration — Phone study" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="1757853503477.jpeg" alt="Illustration — Yin-yang phones by Oz" />
+      </div>
+      <div class="illus-item fade-up">
+        <img src="20251004_180031.jpg.jpeg" alt="Illustration — Crime scene sneakers by Oz" />
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ══ ABOUT ══ -->
+  <section id="about">
+    <p class="section-label fade-up">The Person</p>
+    <h2 class="section-title fade-up">About <em>Oz</em></h2>
+
+    <div class="about-layout">
+      <div class="about-portrait-wrap fade-up">
+        <img src="Ozed Two.jpeg"
+             alt="Oziomachi Nwankwo" />
+        <div class="portrait-caption">
+          <span>Oziomachi Nwankwo · Oz</span>
+        </div>
+      </div>
+
+      <div class="about-content fade-up">
+        <h3>Storyteller by instinct.<br/><em style="color:var(--gold-lt)">Craftsperson by practice.</em></h3>
+
+        <p>Oziomachi Nwankwo — known simply as <strong style="color:var(--white);">Oz</strong> — is a Nigerian writer, director, and illustrator working across film, theatre, and visual art. A Best Graduating Student (BGS 5.0), her work is marked by an unflinching curiosity about people, identity, and the African experience.</p>
+
+        <p>She has written screenplays, directed stage productions, managed programmes for a beloved West African film festival, and documented the behind-the-scenes of projects she believes in. Wherever she is in the room — in front of a keyboard, on set, or behind a drawing tablet — she is building stories.</p>
+
+        <p>Her illustrations carry the same sensibility as her scripts: specific, humane, and rooted in the textures of everyday Nigerian life.</p>
+
+        <div class="experience-section">
+          <h4>Experience</h4>
+
+          <div class="exp-item">
+            <div class="exp-year">2024–2025</div>
+            <div class="exp-body">
+              <h5>The Annual Film Mischief (TAFM)</h5>
+              <p class="exp-role">Programmes Manager</p>
+              <p>Curated and coordinated programming for TAFM, West Africa's beloved indie film gathering — managing filmmaker relations, panel events, and screening schedules.</p>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-year">2024–2025</div>
+            <div class="exp-body">
+              <h5>Integrated Howdy Konzult Limited</h5>
+              <p class="exp-role">NYSC Intern — Admin · Sales · Marketing · Operations</p>
+              <p>Full-service media agency specialising in outdoor advertising, billboard maintenance, offset printing, product branding, and brand activation. Rotated through all departments during NYSC placement.</p>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-year">2024</div>
+            <div class="exp-body">
+              <h5>Eniyan — Theatre Arts Unit (THA '22)</h5>
+              <p class="exp-role">Director</p>
+              <p>Directed the Special Practical Project (Group 3) — an adaptation of Wale Ogunyemi's Eniyan for a live audience at Creative Arts Theatre Hall.</p>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-year">2023</div>
+            <div class="exp-body">
+              <h5>Eziokwu: The Stage Play</h5>
+              <p class="exp-role">Co-Producer &amp; Co-Writer</p>
+              <p>Co-produced and co-wrote a stage play exploring truth, identity and narrative.</p>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-year">2023–2025</div>
+            <div class="exp-body">
+              <h5>Film Rats Yellow / Independent Productions</h5>
+              <p class="exp-role">Screenwriter · Location Manager · BTS Journalist</p>
+              <p>Last Card (Screenwriter), Places of Love (Location Manager), The Kindling Light and Breaking Barriers (BTS/Production Journalist).</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-name">
+          Ozioma<em>chi</em><br/>Nwankwo
+        </div>
+        <p style="margin-top:1rem;font-size:.8rem;color:var(--grey-lt);max-width:320px;line-height:1.7;">
+          Open to writing commissions, directing projects, and creative collaborations. Let's make something true.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-social">
+          <a href="https://substack.com/@readoz" target="_blank" rel="noopener">Substack</a>
+          <a href="https://www.instagram.com/theannualfilm.mischief" target="_blank" rel="noopener">TAFM IG</a>
+          <a href="https://www.instagram.com/p/C9VoPTIuOKe/" target="_blank" rel="noopener">Eziokwu IG</a>
+          <a href="https://lnkd.in/p/eRfz__Bv" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://drive.google.com/drive/folders/1XeN-9ef2CBPhfF2F6dR0yGcctd6eV4xT" target="_blank" rel="noopener">Writing</a>
+          <a href="https://ihkl.net.ng/" target="_blank" rel="noopener">IHKL</a>
+        </div>
+        <a href="https://drive.google.com/file/d/1TVeyjluDTH3hBsGdoFxtbuIubTSv8Jwl/view?usp=drivesdk"
+           target="_blank" rel="noopener" class="btn-solid">
+          Read a Script
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <p class="footer-copy">
+      © 2026 Oziomachi Nwankwo — All rights reserved &nbsp;·&nbsp; Made with intent
+    </p>
+  </footer>
+
+  <!-- ══ SCRIPTS ══ -->
+  <script>
+    // Progress bar
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById('progress-bar').style.width = (scrolled / total * 100) + '%';
+    });
+
+    // Nav scroll class
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    hamburger.addEventListener('click', () => {
+      navbar.classList.toggle('menu-open');
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => navbar.classList.remove('menu-open'));
+    });
+
+    // Fade-up on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
